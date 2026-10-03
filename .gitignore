@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# IDE
+.idea/
+
+# Local data
+data/*
+!data/.gitkeep
+
+# Chroma / vector database
+chroma_db/
+
+# OS files
+.DS_Store
+Thumbs.db
