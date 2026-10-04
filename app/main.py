@@ -1,5 +1,6 @@
 from ingestion.document_loader import load_text_file
 from ingestion.text_splitter import split_text
+from sentence_transformers import SentenceTransformer
 
 
 def main():
@@ -19,6 +20,15 @@ def main():
         print(f"--- Chunk {index} ---")
         print(chunk)
         print()
+
+    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    # Generate embeddings for all chunks
+    embeddings = embedding_model.encode(chunks)
+
+    print("\nEmbeddings generated successfully!")
+    print("Number of embeddings:", len(embeddings))
+    print("Dimensions of each embedding:", len(embeddings[0]))
 
 
 if __name__ == "__main__":
