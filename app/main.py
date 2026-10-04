@@ -1,7 +1,7 @@
 from ingestion.document_loader import load_text_file
 from ingestion.text_splitter import split_text
 from sentence_transformers import SentenceTransformer
-
+import chromadb
 
 def main():
     file_path = "data/sample.txt"
@@ -30,6 +30,36 @@ def main():
     print("Number of embeddings:", len(embeddings))
     print("Dimensions of each embedding:", len(embeddings[0]))
 
+    # Create a ChromaDB client
+    client = chromadb.PersistentClient(path="./chroma_db")
+
+    # Create or get our collection
+    collection = client.get_or_create_collection(
+        name="rag_knowledge"
+    )
+
+    # Store the chunks and their embeddings
+    collection.add(
+        ids=[f"chunk_{i}" for i in range(len(chunks))],
+        documents=chunks,
+        embeddings=embeddings.tolist()
+    )
+
+    print("\nChunks stored in ChromaDB successfully!")
+    print("Number of documents in collection:", collection.count())
+
+    question = "Where are the embeddings stored?"
+
+    # Search ChromaDB
+    results = collection.query(
+        query_embeddings=[embedding_model.encode(question).tolist()],
+        n_results=2
+    )
+
+    print("\n--- Retrieved Chunks ---")
+
+    for document in results["documents"][0]:
+        print(document)
 
 if __name__ == "__main__":
     main()
