@@ -38,12 +38,20 @@ def main():
         name="rag_knowledge"
     )
 
-    # Store the chunks and their embeddings
+    # Clear old chunks before indexing the updated document
+    if collection.count() > 0:
+        collection.delete(
+            ids=collection.get()["ids"]
+        )
+
+    # Store the latest chunks and their embeddings
     collection.add(
         ids=[f"chunk_{i}" for i in range(len(chunks))],
         documents=chunks,
         embeddings=embeddings.tolist()
     )
+
+    print("\nOld chunks cleared and updated chunks stored successfully!")
 
     print("\nChunks stored in ChromaDB successfully!")
     print("Number of documents in collection:", collection.count())
